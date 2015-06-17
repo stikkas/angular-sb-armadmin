@@ -21,3 +21,68 @@
 * **bootstrap** - less файлы *bootstrap* для настройки своей темы. Можно вообще отказаться
     от *bootstrap*, для этого достаточно исключить из html файлов включение *boostrap.min.css*,
     а все настройки производить в своих файлах css. 
+
+### Использование https.
+Для запуска приложения по https используется файл настроек application-https.properties.
+Приложение запускается командой:
+
+```sh
+	$ SPRING_PROFILES_ACTIVE=https mvn spring-boot:run
+```
+
+Сертификат создается командой:
+
+```sh
+	$ keytool -genkey -alias bookmarks -keyalg RSA -keystore src/main/resources/tomcat.keystore
+```
+
+## Сборка и запуск
+В pom.xml настроены различные профили. По умолчанию используется профиль с встроенной базой данных с использованием http.
+В IDE можно добавить свои действия:
+* **run** - запуск приложения по умолчанию
+
+	```sh
+		$ mvn spring-boot:run
+	```
+
+* **run-prod** - запуск приложения в production с использование СУБД oracle
+
+	```sh
+		$ mvn -Poracledb spring-boot:run
+	```
+
+* **run-https** - запуск приложения с использованием встроенной базы данных и https
+
+	```sh
+		$ mvn -Pdevelop,https_dev spring-boot:run
+	```
+
+* **run-https-prod** - запуск приложения с использование СУБД oracle и https
+
+	```sh
+		$ mvn -Poracledb,https_oracle spring-boot:run
+	```
+
+* **dev-package** - сборка с использованием встроенной базы данных
+
+	```sh
+		$ mvn package
+	```
+
+* **dev-https-package** - сборка с использованием встроенной базы данных и https
+
+	```sh
+		$ mvn -Pdevelop,https_dev package
+	```
+
+* **prod-package** - сборка с использованием СУБД oracle
+
+	```sh
+		$ mvn -Poracledb package
+	```
+
+* **prod-https-package** - сборка с использованием СУБД oracle и https
+
+	```sh
+		$ mvn -Poracledb,https_oracle package
+	```
