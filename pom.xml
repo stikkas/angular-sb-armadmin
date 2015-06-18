@@ -40,11 +40,6 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<active_profiles></active_profiles>
-				<db_platform>h2</db_platform>
-				<show_sql>true</show_sql>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>com.h2database</groupId>
@@ -55,11 +50,6 @@
 
 		<profile>
 			<id>oracledb</id>
-			<properties>
-				<active_profiles>oracle</active_profiles>
-				<db_platform>oracle</db_platform>
-				<show_sql>false</show_sql>
-			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>com.oracle</groupId>
@@ -68,20 +58,6 @@
 				</dependency>
 			</dependencies>
 		</profile>
-
-		<profile>
-			<id>https_dev</id>
-			<properties>
-				<active_profiles>https</active_profiles>
-			</properties>
-		</profile>
-		<profile>
-			<id>https_oracle</id>
-			<properties>
-				<active_profiles>oracle,https</active_profiles>
-			</properties>
-		</profile>
-
 	</profiles>
 
 	<properties>
@@ -93,24 +69,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<addResources>false</addResources>
-				</configuration>
 			</plugin>
 		</plugins>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>application.properties</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
 				<filtering>false</filtering>
 				<excludes>
-					<exclude>application.properties</exclude>
 					<exclude>**/nbproject/**/*</exclude>
 				</excludes>
 			</resource>

@@ -18,13 +18,6 @@
     а все настройки производить в своих файлах css. 
 
 #### Использование https
-Для запуска приложения по https используется файл настроек application-https.properties.
-Приложение запускается командой:
-
-```sh
-	$ SPRING_PROFILES_ACTIVE=https mvn spring-boot:run
-```
-
 Сертификат создается командой:
 
 ```sh
@@ -33,51 +26,62 @@
 
 #### Сборка и запуск
 В pom.xml настроены различные профили. По умолчанию используется профиль с встроенной базой данных с использованием http.
+Сначала использовались несколько профилей в pom.xml, которые определяли некоторые свойства, подставляемые при парсенге
+application.properties. Но это не оправдало себя, т.к. для работы такой схемы необходимо отключить включения ресурсов в 
+развертывание плагином spring-boot-maven-plugin (spring-boot:run). Такое включения позволяет разрабатывать клиентскую часть
+не пересобирая все приложение - на лету. Для того чтобы не упускать такую возможность решено было использовать различные
+переменные среды для переключения между файлами свойств приложения. Таким образом имеется три файла свойств:
+* **app-dev.properties** - используется для разработки (встроенная база, логи и т.д.)
+* **app-prod.properties** - используется для выпуска (база oracle)
+* **application-https.properties** - добавляет работу по https, активируется переменной среды __SPRING_PROFILES_ACTIVE__=https
+
 В IDE можно добавить свои действия:
 * **run** - запуск приложения по умолчанию
 
 	```sh
-		$ mvn spring-boot:run
+		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties mvn spring-boot:run
 	```
 
 * **run-prod** - запуск приложения в production с использование СУБД oracle
 
 	```sh
-		$ mvn -Poracledb spring-boot:run
+		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties mvn -Poracledb spring-boot:run
 	```
 
 * **run-https** - запуск приложения с использованием встроенной базы данных и https
 
 	```sh
-		$ mvn -Pdevelop,https_dev spring-boot:run
+		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties SPRING_PROFILES_ACTIVE=https mvn spring-boot:run
 	```
 
 * **run-https-prod** - запуск приложения с использование СУБД oracle и https
 
 	```sh
-		$ mvn -Poracledb,https_oracle spring-boot:run
+		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties SPRING_PROFILES_ACTIVE=https mvn -Poracledb spring-boot:run
 	```
 
 * **dev-package** - сборка с использованием встроенной базы данных
 
 	```sh
-		$ mvn package
+		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties mvn package
 	```
 
 * **dev-https-package** - сборка с использованием встроенной базы данных и https
 
 	```sh
-		$ mvn -Pdevelop,https_dev package
+		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties SPRING_PROFILES_ACTIVE=https mvn package
 	```
 
 * **prod-package** - сборка с использованием СУБД oracle
 
 	```sh
-		$ mvn -Poracledb package
+		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties mvn -Poracledb package
 	```
 
 * **prod-https-package** - сборка с использованием СУБД oracle и https
 
 	```sh
-		$ mvn -Poracledb,https_oracle package
+		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties SPRING_PROFILES_ACTIVE=https mvn -Poracledb package
 	```
+
+В NetBeans переменные среды выставляются для каждого действия в окне __Свойства__, например, Env.SPRING_CONFIG_LOCATION=classpath:/app-prod.properties.
