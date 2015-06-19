@@ -6,10 +6,6 @@
             <goals>
                 <goal>spring-boot:run</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-dev.properties</Env.SPRING_CONFIG_LOCATION>
-                
-            </properties>
         </action>
         <action>
             <actionName>CUSTOM-run-prod</actionName>
@@ -17,9 +13,6 @@
             <goals>
                 <goal>spring-boot:run</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-prod.properties</Env.SPRING_CONFIG_LOCATION>
-            </properties>
             <activatedProfiles>
                 <activatedProfile>oracledb</activatedProfile>
             </activatedProfiles>
@@ -30,10 +23,10 @@
             <goals>
                 <goal>spring-boot:run</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-dev.properties</Env.SPRING_CONFIG_LOCATION>
-                <Env.SPRING_PROFILES_ACTIVE>https</Env.SPRING_PROFILES_ACTIVE>
-            </properties>
+            <activatedProfiles>
+                <activatedProfile>develop</activatedProfile>
+                <activatedProfile>dev_https</activatedProfile>
+            </activatedProfiles>
         </action>
         <action>
             <actionName>CUSTOM-https-prod</actionName>
@@ -41,12 +34,9 @@
             <goals>
                 <goal>spring-boot:run</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-prod.properties</Env.SPRING_CONFIG_LOCATION>
-                <Env.SPRING_PROFILES_ACTIVE>https</Env.SPRING_PROFILES_ACTIVE>
-            </properties>
             <activatedProfiles>
                 <activatedProfile>oracledb</activatedProfile>
+                <activatedProfile>oracle_https</activatedProfile>
                 
             </activatedProfiles>
         </action>
@@ -56,9 +46,6 @@
             <goals>
                 <goal>package</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-dev.properties</Env.SPRING_CONFIG_LOCATION>
-            </properties>
         </action>
         <action>
             <actionName>CUSTOM-https_dev_package</actionName>
@@ -66,10 +53,10 @@
             <goals>
                 <goal>package</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-dev.properties</Env.SPRING_CONFIG_LOCATION>
-                <Env.SPRING_PROFILES_ACTIVE>https</Env.SPRING_PROFILES_ACTIVE>
-            </properties>
+            <activatedProfiles>
+                <activatedProfile>develop</activatedProfile>
+                <activatedProfile>dev_https</activatedProfile>
+            </activatedProfiles>
         </action>
         <action>
             <actionName>CUSTOM-prod_package</actionName>
@@ -77,9 +64,6 @@
             <goals>
                 <goal>package</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-prod.properties</Env.SPRING_CONFIG_LOCATION>
-            </properties>
             <activatedProfiles>
                 <activatedProfile>oracledb</activatedProfile>
             </activatedProfiles>
@@ -90,12 +74,9 @@
             <goals>
                 <goal>package</goal>
             </goals>
-            <properties>
-                <Env.SPRING_CONFIG_LOCATION>classpath:/app-prod.properties</Env.SPRING_CONFIG_LOCATION>
-                <Env.SPRING_PROFILES_ACTIVE>https</Env.SPRING_PROFILES_ACTIVE>
-            </properties>
             <activatedProfiles>
                 <activatedProfile>oracledb</activatedProfile>
+                <activatedProfile>oracle_https</activatedProfile>
                 
             </activatedProfiles>
         </action>

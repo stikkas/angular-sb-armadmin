@@ -2,6 +2,9 @@
 с использованием *spring-boot* в качестве сервеной части и *angularjs* + *bootstrap* 
 в качестве клиентской части.
 
+#### Требования:
+	* **jdk1.8**
+
 #### Назначение папок:
 * **grunt** - система сборки клиентских js и css файлов. Перед испльзованием необходимо
     перейти в папку и выполнить команду:
@@ -16,6 +19,7 @@
 * **bootstrap** - less файлы *bootstrap* для настройки своей темы. Можно вообще отказаться
     от *bootstrap*, для этого достаточно исключить из html файлов включение *boostrap.min.css*,
     а все настройки производить в своих файлах css. 
+* **scripts** - различные скрипты установки и запуска приложения
 
 #### Использование https
 Сертификат создается командой:
@@ -26,62 +30,80 @@
 
 #### Сборка и запуск
 В pom.xml настроены различные профили. По умолчанию используется профиль с встроенной базой данных с использованием http.
-Сначала использовались несколько профилей в pom.xml, которые определяли некоторые свойства, подставляемые при парсенге
-application.properties. Но это не оправдало себя, т.к. для работы такой схемы необходимо отключить включение ресурсов в 
-развертывание плагином spring-boot-maven-plugin (spring-boot:run). Такое включение позволяет разрабатывать клиентскую часть
-не пересобирая все приложение - на лету. Для того чтобы не упускать такую возможность решено было использовать различные
-переменные среды для переключения между файлами свойств приложения. Таким образом имеется три файла свойств:
-* **app-dev.properties** - используется для разработки (встроенная база, логи и т.д.)
-* **app-prod.properties** - используется для выпуска (база oracle)
-* **application-https.properties** - добавляет работу по https, активируется переменной среды _SPRING_PROFILES_ACTIVE_=https
+Для разработки используются свои файлы настроек приложения вкупе с профилями MAVEN. Нужные файлы передаются параметрами
+командной строки, например, _--spring.config.name=appdev --spring.config.location=classpath:/_.
+Для сборки jar используется application.properties, в который при парсинге вставляются нужные параметры, в том числе
+значения профилей spring-boot.
+Пользоваться application.properties с переменными maven на этапе разработки нельзя, т.к. spring-boot-maven-plugin имеет возможность подключать
+сырые ресурсы, что позволяет разрабатывать front-end, не пересобирая приложение. Можно отключить такую возможность и 
+прикрутить внешний http сервер с пробросом серверных запросов к приложению (по большей части так раньше и поступал), тогда
+можно пользовать и при разработке и при пакетировании одним application.properties + нужные spring профили.
 
 В IDE можно добавить свои действия:
 * **run** - запуск приложения по умолчанию
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties mvn spring-boot:run
+		$ mvn spring-boot:run
 	```
 
 * **run-prod** - запуск приложения в production с использование СУБД oracle
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties mvn -Poracledb spring-boot:run
+		$ mvn -Poracledb spring-boot:run
 	```
 
 * **run-https** - запуск приложения с использованием встроенной базы данных и https
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties SPRING_PROFILES_ACTIVE=https mvn spring-boot:run
+		$ mvn -Pdevelop,dev_https spring-boot:run
 	```
 
 * **run-https-prod** - запуск приложения с использование СУБД oracle и https
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties SPRING_PROFILES_ACTIVE=https mvn -Poracledb spring-boot:run
+		$ mvn -Poracledb,oracle_https spring-boot:run
 	```
 
 * **dev-package** - сборка с использованием встроенной базы данных
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties mvn package
+		$ mvn package
 	```
 
 * **dev-https-package** - сборка с использованием встроенной базы данных и https
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-dev.properties SPRING_PROFILES_ACTIVE=https mvn package
+		$ mvn -Pdevelop,dev_https package
 	```
 
 * **prod-package** - сборка с использованием СУБД oracle
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties mvn -Poracledb package
+		$ mvn -Poracledb package
 	```
 
 * **prod-https-package** - сборка с использованием СУБД oracle и https
 
 	```sh
-		$ SPRING_CONFIG_LOCATION=classpath:/app-prod.properties SPRING_PROFILES_ACTIVE=https mvn -Poracledb package
+		$ mvn -Poracledb,oracle_https package
 	```
 
-В NetBeans переменные среды выставляются для каждого действия в окне _Свойства_, например, _Env.SPRING_CONFIG_LOCATION=classpath:/app-prod.properties_.
+##### Установка на windows службы.
+Для установки приложения в качестве службы на windows машине используется nssm. 
+Диструбутив его находтся в папке _scripts_.
+Установка службы:
+	
+	```sh
+		nssm install NewServiceName javaw -jar path_to_our_application.jar
+	```
+
+Для установки новой версии приложения достаточно остановить сервис средствами Windows,
+заменить файл новым и запустить сервис средствами Windows.
+Удаление службы:
+
+	```sh
+		nssm remove NewServiceName confirm
+	```
+
+##### Установка на linux.
+TODO: Необходимо создать init скрипты для centos и debian
