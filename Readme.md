@@ -3,7 +3,7 @@
 в качестве клиентской части.
 
 #### Требования:
-	* **jdk1.8**
+* **jdk1.8**
 
 #### Назначение папок:
 * **grunt** - система сборки клиентских js и css файлов. Перед испльзованием необходимо
@@ -93,17 +93,17 @@
 Диструбутив его находтся в папке _scripts_.
 Установка службы:
 	
-	```sh
-		nssm install NewServiceName javaw -jar path_to_our_application.jar
-	```
+```sh
+	nssm install NewServiceName javaw -jar path_to_our_application.jar
+```
 
 Для установки новой версии приложения достаточно остановить сервис средствами Windows,
 заменить файл новым и запустить сервис средствами Windows.
 Удаление службы:
 
-	```sh
-		nssm remove NewServiceName confirm
-	```
+```sh
+	nssm remove NewServiceName confirm
+```
 
 ##### Установка на linux.
 TODO: Необходимо создать init скрипты для centos и debian
