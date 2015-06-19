@@ -66,17 +66,19 @@ module.exports = function (grunt) {
 		concat: {
 			app: {
 				files: {
-					'<%= paths.dest.angular =>': [
+					'<%= paths.dest.angular %>': [
 						join(libsRoot, 'angular', 'angular.min.js'),
 						join(libsRoot, 'angular-route', 'angular-route.min.js'),
-						join(libsRoot, 'angular-resource', 'angular-resource.min.js')
+						join(libsRoot, 'angular-resource', 'angular-resource.min.js'),
+						join(libsRoot, 'spring-security-csrf-token-interceptor', 'dist', 'spring-security-csrf-token-interceptor.min.js')
 					]
 				}
 			},
 			login: {
 				files: {
-					'<%= paths.loginDest.angular =>': [
-						join(libsRoot, 'angular', 'angular.min.js')
+					'<%= paths.loginDest.angular %>': [
+						join(libsRoot, 'angular', 'angular.min.js'),
+						join(libsRoot, 'spring-security-csrf-token-interceptor', 'dist', 'spring-security-csrf-token-interceptor.min.js')
 					]
 				}
 			}
