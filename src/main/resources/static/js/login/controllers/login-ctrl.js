@@ -1,50 +1,30 @@
-Lg.controller('loginCtrl', ['$scope', '$http', function ($scope, $http) {
-
-		var authenticate = function (credentials, callback) {
-			var headers = credentials ? {authorization: "Basic "
-						+ btoa(credentials.username + ":" + credentials.password)
-			} : {};
-			$http.get('login', {headers: headers}).success(function (data) {
-				/*
-				 if (data.name) {
-				 $rootScope.authenticated = true;
-				 } else {
-				 $rootScope.authenticated = false;
-				 }
-				 */
-				callback && callback();
-			}).error(function () {
-				/*
-				 $rootScope.authenticated = false;
-				 callback && callback();
-				 */
-			});
-		};
-		authenticate();
-		$scope.credentials = {};
+Lg.controller('loginCtrl', ['$scope', '$http', '$httpParamSerializerJQLike',
+	'$window', function ($scope, $http, $httpParamSerializerJQLike, $window) {
+		/*
+		 $http.defaults.headers.common.Authorization = "Basic "
+		 + btoa('sic_s' + ":" + 'sic_s');
+		 */
+		$scope.cred = {};
 		$scope.login = function () {
-			authenticate($scope.credentials, function () {
-				/*
-				 if ($rootScope.authenticated) {
-				 $location.path("/");
-				 $scope.error = false;
-				 } else {
-				 $location.path("/login");
-				 $scope.error = true;
-				 }
-				 */
-			});
+			$http({url: "/login",
+				method: 'POST',
+				data: $httpParamSerializerJQLike($scope.cred),
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			})
+					.success(function () {
+						$window.location.href = '/index.html';
+					});
 		};
-		$scope.logout = function () {
-			$http.post('logout', {}).success(function () {
-				/*
-				 $rootScope.authenticated = false;
-				 $location.path("/");
-				 */
-			}).error(function (data) {
-				/*
-				 $rootScope.authenticated = false;
-				 */
-			});
-		};
+		/*
+		 $http.get('/enter.html')
+		 
+		 .success(function (data, status, headers, config) {
+		 $scope._csrf = config.headers[$http.defaults.xsrfHeaderName];
+		 })
+		 .error(function (data, status, headers, config) {
+		 $scope._csrf = config.headers[$http.defaults.xsrfHeaderName];
+		 });
+		 */
 	}]);

@@ -1,9 +1,7 @@
 package ru.insoft.archive.app;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,40 +9,46 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.stereotype.Component;
+import ru.insoft.archive.app.service.adm.MyUserDetailsService;
 
-@Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@Component
 @EnableWebSecurity
+/**
+ * Настройка система аутентификации
+ */
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
+	private MyUserDetailsService uds;
+
+	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-				.withUser("user").password("user").roles("USER");
+		auth.userDetailsService(uds)
+				.passwordEncoder(new Md5PasswordEncoder());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.httpBasic()
-				.and()
+		http
 				.authorizeRequests()
-				.antMatchers("/login.html", "/js/libs/login.min.js", "/js/login/login.min.js", "/css/libs/login.min.css", "/css/login/login.min.css")
+				.antMatchers("/js/libs/login.min.js", "/js/login/login.min.js", 
+						"/css/libs/login.min.css", "/css/login/login.min.css")
 				.permitAll()
-				.anyRequest().authenticated().and()
+				.anyRequest().authenticated()
+				.and()
+				.formLogin()
+				.loginPage("/enter.html")
+				.failureUrl("/failedLogin")
+				.loginProcessingUrl("/login")
+				.permitAll()
+				.and()
+				.logout()
+				.permitAll()
+				.and()
 				.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
+//				.csrf().disable();
 				.csrf().csrfTokenRepository(csrfTokenRepository());
-		/*
-		 http.authorizeRequests()
-		 .antMatchers("/login.html", "/js/libs/login.min.js", "/js/login/login.min.js", "/css/libs/login.min.css", "/css/login/login.min.css")
-		 .permitAll()
-		 .anyRequest().authenticated()
-		 .and()
-		 .formLogin()
-		 .loginPage("/login")
-		 .and()
-		 .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-		 .csrf().csrfTokenRepository(csrfTokenRepository());
-		 */
 	}
 
 	private static CsrfTokenRepository csrfTokenRepository() {
